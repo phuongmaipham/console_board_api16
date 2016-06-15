@@ -13,12 +13,14 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 
 import java.util.ArrayList;
 
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     private GoogleApiClient client;
     private ProgressDialog pDialog;
     private static final String SEVRER_ADDRESS = "http://localhost/db_upload.php";
-   // JSONParser jsonParser = new JSONParser();
+    // JSONParser jsonParser = new JSONParser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,17 +85,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.left:
-                new UploadMyCommand("left").execute();
+                new UploadMyCommand("left","http://10.4.95.101/cgi-bin/motors_mini.cgi?s=turnleft").execute();
                 break;
             case R.id.right:
-                new UploadMyCommand("right").execute();
+                new UploadMyCommand("right","http://10.4.95.101/cgi-bin/motors_mini.cgi?s=turnright").execute();
                 break;
             case R.id.up:
-                new UploadMyCommand("up").execute();
+                new UploadMyCommand("up","http://10.4.95.101/cgi-bin/motors_mini.cgi?s=forward").execute();
                 break;
             case R.id.down:
-                new UploadMyCommand("down").execute();
+                new UploadMyCommand("down","http://10.4.95.101/cgi-bin/motors_mini.cgi?s=backward").execute();
                 break;
+        /*
             case R.id.cross:
                 new UploadMyCommand("cross").execute();
                 break;
@@ -118,58 +121,62 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             case R.id.back:
                 new UploadMyCommand("back").execute();
                 break;
+        */
         }
 
     }
-/*
-    @Override
-    public void onStart() {
-        super.onStart();
+    /*
+        @Override
+        public void onStart() {
+            super.onStart();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.phuongpham.consoleboard/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
+            // ATTENTION: This was auto-generated to implement the App Indexing API.
+            // See https://g.co/AppIndexing/AndroidStudio for more information.
+            client.connect();
+            Action viewAction = Action.newAction(
+                    Action.TYPE_VIEW, // TODO: choose an action type.
+                    "Main Page", // TODO: Define a title for the content shown.
+                    // TODO: If you have web page content that matches this app activity's content,
+                    // make sure this auto-generated web page URL is correct.
+                    // Otherwise, set the URL to null.
+                    Uri.parse("http://host/path"),
+                    // TODO: Make sure this auto-generated app URL is correct.
+                    Uri.parse("android-app://com.phuongpham.consoleboard/http/host/path")
+            );
+            AppIndex.AppIndexApi.start(client, viewAction);
+        }
 
-    @Override
-    public void onStop() {
-        super.onStop();
+        @Override
+        public void onStop() {
+            super.onStop();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.phuongpham.consoleboard/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
-    }
-*/
+            // ATTENTION: This was auto-generated to implement the App Indexing API.
+            // See https://g.co/AppIndexing/AndroidStudio for more information.
+            Action viewAction = Action.newAction(
+                    Action.TYPE_VIEW, // TODO: choose an action type.
+                    "Main Page", // TODO: Define a title for the content shown.
+                    // TODO: If you have web page content that matches this app activity's content,
+                    // make sure this auto-generated web page URL is correct.
+                    // Otherwise, set the URL to null.
+                    Uri.parse("http://host/path"),
+                    // TODO: Make sure this auto-generated app URL is correct.
+                    Uri.parse("android-app://com.phuongpham.consoleboard/http/host/path")
+            );
+            AppIndex.AppIndexApi.end(client, viewAction);
+            client.disconnect();
+        }
+    */
     private class UploadMyCommand extends AsyncTask<Void, Void, Void> {
 
         String move;
+        String url;
         //String url ="http://192.168.1.92/db_upload.php";
-        String url = "http://10.4.95.94/cgi-bin/testing.cgi?s=shutdown";
+        //String url ="http://10.4.95.99/db_upload.php";
+        //String url ="http://10.4.95.101/cgi-bin/motors_mini?s=forward";
 
-        public UploadMyCommand (String move){
+        public UploadMyCommand (String move, String url){
             this.move = move;
+            this.url = url;
         }
 
         @Override
@@ -183,11 +190,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
             try {
 
-                post.setEntity(new UrlEncodedFormEntity(dataToSend));
-                httpclient.execute(post);
+                // post.setEntity(new UrlEncodedFormEntity(dataToSend));
+                //httpclient.execute(post);
 
-                //post.setEntity(new UrlEncodedFormEntity(dataToSend, HTTP.UTF_8));
-                //HttpResponse response = httpclient.execute(post);
+                post.setEntity(new UrlEncodedFormEntity(dataToSend, HTTP.UTF_8));
+                HttpResponse response = httpclient.execute(post);
                 //finish();
 
             } catch (Exception e) {
@@ -199,8 +206,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                Toast.makeText(getApplicationContext(), "COMMAND UPLOADED ON SERVER", Toast.LENGTH_SHORT).show();
+            super.onPostExecute(aVoid);
+            Toast.makeText(getApplicationContext(), "COMMAND UPLOADED ON SERVER", Toast.LENGTH_SHORT).show();
         }
     }
 

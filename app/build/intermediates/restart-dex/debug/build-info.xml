@@ -1,43 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <instant-run
-    abi="x86"
-    api-level="22"
-    density="xxhdpi"
+    abi="armeabi-v7a"
+    api-level="16"
+    density="hdpi"
     format="7"
-    timestamp="208286779522208" >
+    timestamp="259801741102601" >
 
     <task
         name="javac"
-        duration="0" />
+        duration="373" />
     <task
         name="instant-run-dex"
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="0" />
+        duration="198" />
     <task
         name="verifier"
-        duration="0" />
+        duration="30" />
 
-    <build timestamp="207778426483045" >
+    <artifact
+        location="/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/outputs/apk/app-debug.apk"
+        type="MAIN" />
+
+    <build timestamp="259801741102601" >
         <artifact
             location="/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/outputs/apk/app-debug.apk"
             type="MAIN" />
     </build>
-    <build
-        timestamp="208016181729152"
-        verifier="COMPATIBLE" >
-        <artifact
-            location="/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/intermediates/builds/debug/208016181729152/classes.dex"
-            type="RELOAD_DEX" />
-    </build>
-    <build
-        timestamp="208278199695890"
-        verifier="COMPATIBLE" >
-        <artifact
-            location="/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/intermediates/builds/debug/208278199695890/classes.dex"
-            type="RELOAD_DEX" />
-    </build>
-    <build timestamp="208286779522208" />
 
 </instant-run>
