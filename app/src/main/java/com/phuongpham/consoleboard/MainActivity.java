@@ -165,7 +165,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     private class UploadMyCommand extends AsyncTask<Void, Void, Void> {
 
         String move;
-        String url ="http://192.168.1.92/db_upload.php";
+        //String url ="http://192.168.1.92/db_upload.php";
+        String url = "http://10.4.95.94/cgi-bin/testing.cgi?s=shutdown";
 
         public UploadMyCommand (String move){
             this.move = move;
