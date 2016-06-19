@@ -156,6 +156,10 @@
         "source": "/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.4.0/res/drawable/abc_item_background_holo_light.xml"
     },
     {
+        "merged": "/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/intermediates/res/merged/debug/drawable/back_ground.png",
+        "source": "/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/src/main/res/drawable/back_ground.png"
+    },
+    {
         "merged": "/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/intermediates/res/merged/debug/drawable/abc_dialog_material_background_dark.xml",
         "source": "/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.4.0/res/drawable/abc_dialog_material_background_dark.xml"
     },

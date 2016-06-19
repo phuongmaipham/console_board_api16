@@ -1,6 +1,7 @@
 package com.phuongpham.consoleboard;
 
 import android.app.ProgressDialog;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.MediaController;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
      */
     private GoogleApiClient client;
     private ProgressDialog pDialog;
+    VideoView streamView;
+    MediaController mediaController;
     private static final String SEVRER_ADDRESS = "http://localhost/db_upload.php";
     // JSONParser jsonParser = new JSONParser();
 
@@ -59,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         ImageButton square = (ImageButton) findViewById(R.id.square);
         ImageButton cross = (ImageButton) findViewById(R.id.cross);
 
+        streamView = (VideoView)findViewById(R.id.streamview);
+
         left.setOnClickListener(this);
         right.setOnClickListener(this);
         up.setOnClickListener(this);
@@ -74,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         start.setOnClickListener(this);
         back.setOnClickListener(this);
 
+        streamView.setMediaController(new MediaController(this));
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -96,76 +104,96 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             case R.id.down:
                 new UploadMyCommand("down","http://10.4.95.101/cgi-bin/motors_mini.cgi?s=backward").execute();
                 break;
-        /*
-            case R.id.cross:
-                new UploadMyCommand("cross").execute();
-                break;
-            case R.id.circle:
-                new UploadMyCommand("circle").execute();
-                break;
-            case R.id.square:
-                new UploadMyCommand("square").execute();
-                break;
-            case R.id.triangle:
-                new UploadMyCommand("triangle").execute();
-                break;
-            case R.id.my_left:
-                new UploadMyCommand("my_left").execute();
-                break;
-            case R.id.my_right:
-                new UploadMyCommand("my_right").execute();
-                break;
-            case R.id.start:
-                new UploadMyCommand("start").execute();
-                break;
-            case R.id.back:
-                new UploadMyCommand("back").execute();
-                break;
-        */
+		    case R.id.start:
+				//StartVideo("http://10.4.95.101/cgi-bin/streamer.cgi");
+                StartVideo("http://www.androidbegin.com/tutorial/AndroidCommercial.3gp");
+				//StartVideo("http://vevoplaylist-live.hls.adaptive.level3.net/vevo/ch1/appleman.m3u8");
+				break;
+		/*
+			case R.id.cross:
+				new UploadMyCommand("cross").execute();
+				break;
+			case R.id.circle:
+				new UploadMyCommand("circle").execute();
+				break;
+			case R.id.square:
+				new UploadMyCommand("square").execute();
+				break;
+			case R.id.triangle:
+				new UploadMyCommand("triangle").execute();
+				break;
+			case R.id.my_left:
+				new UploadMyCommand("my_left").execute();
+				break;
+			case R.id.my_right:
+				new UploadMyCommand("my_right").execute();
+				break;
+			case R.id.back:
+				new UploadMyCommand("back").execute();
+				break;
+		*/
         }
 
     }
-    /*
-        @Override
-        public void onStart() {
-            super.onStart();
 
-            // ATTENTION: This was auto-generated to implement the App Indexing API.
-            // See https://g.co/AppIndexing/AndroidStudio for more information.
-            client.connect();
-            Action viewAction = Action.newAction(
-                    Action.TYPE_VIEW, // TODO: choose an action type.
-                    "Main Page", // TODO: Define a title for the content shown.
-                    // TODO: If you have web page content that matches this app activity's content,
-                    // make sure this auto-generated web page URL is correct.
-                    // Otherwise, set the URL to null.
-                    Uri.parse("http://host/path"),
-                    // TODO: Make sure this auto-generated app URL is correct.
-                    Uri.parse("android-app://com.phuongpham.consoleboard/http/host/path")
-            );
-            AppIndex.AppIndexApi.start(client, viewAction);
+        private void StartVideo (String src){
+            Uri UriSrc = Uri.parse(src);
+            if(UriSrc == null){
+                Toast.makeText(MainActivity.this,
+                        "UriSrc == null", Toast.LENGTH_LONG).show();
+            }else{
+                streamView.setVideoURI(UriSrc);
+                streamView.setMediaController(new MediaController(this));
+                streamView.start();
+
+                Toast.makeText(MainActivity.this,
+                        "Connect: " + src,
+                        Toast.LENGTH_LONG).show();
+            }
         }
 
-        @Override
-        public void onStop() {
-            super.onStop();
 
-            // ATTENTION: This was auto-generated to implement the App Indexing API.
-            // See https://g.co/AppIndexing/AndroidStudio for more information.
-            Action viewAction = Action.newAction(
-                    Action.TYPE_VIEW, // TODO: choose an action type.
-                    "Main Page", // TODO: Define a title for the content shown.
-                    // TODO: If you have web page content that matches this app activity's content,
-                    // make sure this auto-generated web page URL is correct.
-                    // Otherwise, set the URL to null.
-                    Uri.parse("http://host/path"),
-                    // TODO: Make sure this auto-generated app URL is correct.
-                    Uri.parse("android-app://com.phuongpham.consoleboard/http/host/path")
-            );
-            AppIndex.AppIndexApi.end(client, viewAction);
-            client.disconnect();
-        }
-    */
+	/*
+	@Override
+	public void onStart() {
+		super.onStart();
+
+		// ATTENTION: This was auto-generated to implement the App Indexing API.
+		// See https://g.co/AppIndexing/AndroidStudio for more information.
+		client.connect();
+		Action viewAction = Action.newAction(
+				Action.TYPE_VIEW, // TODO: choose an action type.
+				"Main Page", // TODO: Define a title for the content shown.
+				// TODO: If you have web page content that matches this app activity's content,
+				// make sure this auto-generated web page URL is correct.
+				// Otherwise, set the URL to null.
+				Uri.parse("http://host/path"),
+				// TODO: Make sure this auto-generated app URL is correct.
+				Uri.parse("android-app://com.phuongpham.consoleboard/http/host/path")
+		);
+		AppIndex.AppIndexApi.start(client, viewAction);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+
+		// ATTENTION: This was auto-generated to implement the App Indexing API.
+		// See https://g.co/AppIndexing/AndroidStudio for more information.
+		Action viewAction = Action.newAction(
+				Action.TYPE_VIEW, // TODO: choose an action type.
+				"Main Page", // TODO: Define a title for the content shown.
+				// TODO: If you have web page content that matches this app activity's content,
+				// make sure this auto-generated web page URL is correct.
+				// Otherwise, set the URL to null.
+				Uri.parse("http://host/path"),
+				// TODO: Make sure this auto-generated app URL is correct.
+				Uri.parse("android-app://com.phuongpham.consoleboard/http/host/path")
+		);
+		AppIndex.AppIndexApi.end(client, viewAction);
+		client.disconnect();
+	}
+*/
     private class UploadMyCommand extends AsyncTask<Void, Void, Void> {
 
         String move;

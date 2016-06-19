@@ -16,34 +16,37 @@
         android:layout_width="@android:dimen/app_icon_size"
         android:layout_height="@android:dimen/app_icon_size"
         android:id="@+id/left"
-        android:layout_marginTop="69dp"
-        android:layout_alignParentTop="true"
+        android:background="@drawable/button_left"
+        android:layout_above="@+id/cross"
         android:layout_alignParentLeft="true"
-        android:background="@drawable/button_left"/>
+        android:layout_alignParentStart="true" />
 
     <ImageButton
         android:layout_width="@android:dimen/app_icon_size"
         android:layout_height="@android:dimen/app_icon_size"
         android:id="@+id/right"
-        android:layout_above="@+id/down"
-        android:layout_toRightOf="@+id/down"
-        android:background="@drawable/button_right"/>
+        android:background="@drawable/button_right"
+        android:layout_below="@+id/up"
+        android:layout_alignLeft="@+id/my_left"
+        android:layout_alignStart="@+id/my_left" />
 
     <ImageButton
         android:layout_width="@android:dimen/app_icon_size"
         android:layout_height="@android:dimen/app_icon_size"
         android:id="@+id/square"
-        android:layout_alignTop="@+id/back"
+        android:background="@drawable/button_square"
+        android:layout_below="@+id/triangle"
         android:layout_alignRight="@+id/my_right"
-        android:background="@drawable/button_square"/>
+        android:layout_alignEnd="@+id/my_right" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/my_left"
+        android:background="@drawable/button_my_left"
         android:layout_below="@+id/down"
         android:layout_toRightOf="@+id/down"
-        android:background="@drawable/button_my_left"/>
+        android:layout_toEndOf="@+id/down" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -66,17 +69,19 @@
         android:layout_width="@android:dimen/app_icon_size"
         android:layout_height="@android:dimen/app_icon_size"
         android:id="@+id/up"
-        android:layout_above="@+id/right"
+        android:background="@drawable/button_up"
+        android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/right"
-        android:background="@drawable/button_up"/>
+        android:layout_toStartOf="@+id/right" />
 
     <ImageButton
         android:layout_width="@android:dimen/app_icon_size"
         android:layout_height="@android:dimen/app_icon_size"
         android:id="@+id/cross"
+        android:background="@drawable/button_cross"
         android:layout_below="@+id/square"
         android:layout_toRightOf="@+id/square"
-        android:background="@drawable/button_cross"/>
+        android:layout_toEndOf="@+id/square" />
 
     <ImageButton
         android:layout_width="@android:dimen/app_icon_size"
@@ -90,25 +95,36 @@
         android:layout_width="@android:dimen/app_icon_size"
         android:layout_height="@android:dimen/app_icon_size"
         android:id="@+id/triangle"
-        android:layout_above="@+id/circle"
+        android:background="@drawable/button_triangle"
+        android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/circle"
-        android:background="@drawable/button_triangle"/>
+        android:layout_toStartOf="@+id/circle" />
 
-    <ImageButton
-        android:layout_width="@android:dimen/notification_large_icon_height"
-        android:layout_height="@android:dimen/app_icon_size"
-        android:id="@+id/start"
-        android:layout_alignTop="@+id/back"
-        android:layout_toLeftOf="@+id/my_right"
-        android:background="@drawable/button_start"/>
+    <VideoView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/streamview"
+        android:layout_toRightOf="@+id/my_left"
+        android:layout_alignRight="@+id/start"
+        android:layout_alignEnd="@+id/start"
+        android:layout_above="@+id/back" />
 
     <ImageButton
         android:layout_width="@android:dimen/notification_large_icon_height"
         android:layout_height="@android:dimen/app_icon_size"
         android:id="@+id/back"
-        android:layout_alignTop="@+id/right"
-        android:layout_toRightOf="@+id/right"
-        android:layout_marginLeft="25dp"
-        android:background="@drawable/button_back"/>
+        android:background="@drawable/button_back"
+        android:layout_alignBottom="@+id/my_right"
+        android:layout_toRightOf="@+id/my_left"
+        android:layout_toEndOf="@+id/my_left" />
+
+    <ImageButton
+        android:layout_width="@android:dimen/notification_large_icon_height"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:id="@+id/start"
+        android:background="@drawable/button_start"
+        android:layout_alignBottom="@+id/my_right"
+        android:layout_toLeftOf="@+id/my_right"
+        android:layout_toStartOf="@+id/my_right" />
 
 </RelativeLayout>
