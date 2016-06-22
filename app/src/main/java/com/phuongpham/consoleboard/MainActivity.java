@@ -1,11 +1,14 @@
 package com.phuongpham.consoleboard;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -26,10 +29,13 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity implements OnClickListener {
@@ -43,7 +49,19 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     VideoView streamView;
     MediaController mediaController;
     ImageView downloadedImage;
+    ImageView zoomImage;
+    Bitmap download_img;
     private static final String SEVRER_ADDRESS = "http://localhost/db_upload.php";
+
+
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+
     // JSONParser jsonParser = new JSONParser();
 
     @Override
@@ -71,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
         streamView = (VideoView)findViewById(R.id.streamview);
         downloadedImage = (ImageView)findViewById(R.id.downloadedImage);
+        zoomImage = (ImageView)findViewById(R.id.zoomImage);
 
         left.setOnClickListener(this);
         right.setOnClickListener(this);
@@ -86,6 +105,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         my_right.setOnClickListener(this);
         start.setOnClickListener(this);
         back.setOnClickListener(this);
+
+        downloadedImage.setOnClickListener(this);
+        zoomImage.setOnClickListener(this);
 
         streamView.setMediaController(new MediaController(this));
 
@@ -130,6 +152,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 break;
             case R.id.cross:
                 new UploadMyCommand("close_streamer","http://10.4.95.101/cgi-bin/close_streamer.cgi").execute();
+                break;
+            case R.id.downloadedImage:
+                zoomImage.setVisibility(View.VISIBLE);
+                new DownloadZoominImage("http://10.4.95.101/test.jpg").execute();
+                savePhoto(download_img);
+                break;
+            case R.id.zoomImage:
+                zoomImage.setVisibility(View.INVISIBLE);
+                if(download_img == null)
+                    Toast.makeText(getApplicationContext(), "image downloaded is null", Toast.LENGTH_SHORT).show();
+                else if (download_img != null)
+                    Toast.makeText(getApplicationContext(), "image downloaded is not null", Toast.LENGTH_SHORT).show();
                 break;
 		/*
 			case R.id.cross:
@@ -260,32 +294,82 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         }
     }
 
+
+    // DOWNLOAD IMAGE
     private class DownloadImage extends AsyncTask<Void, Void, Bitmap> {
+    //String name;
+    String url;
+
+    public DownloadImage (String url) {
+        //  this.name = name;
+        this.url = url;
+    }
+
+    @Override
+    protected Bitmap doInBackground(Void... params) {
+
+        try {
+            //URLConnection connection = new URL(url).openConnection();
+            URL my_url = new URL(url);
+            HttpURLConnection connection  = (HttpURLConnection) my_url.openConnection();
+            // connection.setConnectTimeout(1000 * 30);
+            //  connection.setReadTimeout(1000 * 30);
+            InputStream is = connection.getInputStream();
+            download_img = BitmapFactory.decodeStream(is);
+            //Bitmap check = BitmapFactory.decodeStream((InputStream) connection.getContent(), null, null);
+            return download_img;
+            //return BitmapFactory.decodeStream(connection.getInputStream());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    protected void onPostExecute(Bitmap bitmap) {
+        super.onPostExecute(bitmap);
+
+
+        if(bitmap == null){
+            Toast.makeText(getApplicationContext(), "bitmap is null", Toast.LENGTH_SHORT).show();
+        }
+
+        if(bitmap != null){
+            downloadedImage.setImageBitmap(bitmap);
+            Toast.makeText(getApplicationContext(), "image downloaded", Toast.LENGTH_SHORT).show();
+        }
+
+        // Toast.makeText(getApplicationContext(), "image downloaded", Toast.LENGTH_SHORT).show();
+    }
+}
+
+
+    private class DownloadZoominImage extends AsyncTask<Void, Void, Bitmap> {
         //String name;
         String url;
 
-        public DownloadImage (String url) {
-          //  this.name = name;
+        public DownloadZoominImage (String url) {
+            //  this.name = name;
             this.url = url;
         }
 
         @Override
         protected Bitmap doInBackground(Void... params) {
 
-             try {
+            try {
                 //URLConnection connection = new URL(url).openConnection();
-                 URL my_url = new URL(url);
-                 HttpURLConnection connection  = (HttpURLConnection) my_url.openConnection();
+                URL my_url = new URL(url);
+                HttpURLConnection connection  = (HttpURLConnection) my_url.openConnection();
                 // connection.setConnectTimeout(1000 * 30);
-               //  connection.setReadTimeout(1000 * 30);
-                 InputStream is = connection.getInputStream();
-                 Bitmap img = BitmapFactory.decodeStream(is);
-                 //Bitmap check = BitmapFactory.decodeStream((InputStream) connection.getContent(), null, null);
-                 return img;
-                 //return BitmapFactory.decodeStream(connection.getInputStream());
-             }catch (Exception e) {
-                 e.printStackTrace();
-             }
+                //  connection.setReadTimeout(1000 * 30);
+                InputStream is = connection.getInputStream();
+                Bitmap img = BitmapFactory.decodeStream(is);
+                //Bitmap check = BitmapFactory.decodeStream((InputStream) connection.getContent(), null, null);
+                return img;
+                //return BitmapFactory.decodeStream(connection.getInputStream());
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
@@ -299,12 +383,69 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             }
 
             if(bitmap != null){
-                downloadedImage.setImageBitmap(bitmap);
+                zoomImage.setImageBitmap(bitmap);
                 Toast.makeText(getApplicationContext(), "image downloaded", Toast.LENGTH_SHORT).show();
             }
 
-           // Toast.makeText(getApplicationContext(), "image downloaded", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getApplicationContext(), "image downloaded", Toast.LENGTH_SHORT).show();
         }
     }
+    // save photo
+    private void savePhoto(Bitmap bmp)
+    {
+        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        FileOutputStream out = null;
+        Calendar c = Calendar.getInstance();
+        String date = fromInt(c.get(Calendar.MONTH))
+                + fromInt(c.get(Calendar.DAY_OF_MONTH))
+                + fromInt(c.get(Calendar.YEAR))
+                + fromInt(c.get(Calendar.HOUR_OF_DAY))
+                + fromInt(c.get(Calendar.MINUTE))
+                + fromInt(c.get(Calendar.SECOND));
+        File imageFileName = new File(path, date.toString() + ".jpg");
+        try
+        {
+            out = new FileOutputStream(imageFileName);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+            scanPhoto(imageFileName.toString());
+            out = null;
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        Toast.makeText(MainActivity.this, "Saved to gallery", Toast.LENGTH_SHORT).show();
+    }
 
+    private String fromInt(int val)
+    {
+        return String.valueOf(val);
+    }
+
+    private void scanPhoto(String imageFileName)
+    {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(imageFileName);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
+/*
+    //permission method.
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have read or write permission
+        int writePermission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int readPermission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        if (writePermission != PackageManager.PERMISSION_GRANTED || readPermission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
+*/
 }

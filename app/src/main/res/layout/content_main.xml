@@ -135,4 +135,16 @@
         android:layout_alignBottom="@+id/my_left"
         android:id="@+id/downloadedImage" />
 
+    <ImageView
+        android:layout_width="@android:dimen/thumbnail_width"
+        android:layout_height="@android:dimen/notification_large_icon_height"
+        android:id="@+id/zoomImage"
+        android:layout_alignTop="@+id/streamview"
+        android:layout_alignLeft="@+id/left"
+        android:layout_alignStart="@+id/left"
+        android:layout_toStartOf="@+id/streamview"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/back" />
+
 </RelativeLayout>
