@@ -1,6 +1,8 @@
 package com.phuongpham.consoleboard;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -19,12 +22,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     private ProgressDialog pDialog;
     VideoView streamView;
     MediaController mediaController;
+    ImageView downloadedImage;
     private static final String SEVRER_ADDRESS = "http://localhost/db_upload.php";
     // JSONParser jsonParser = new JSONParser();
 
@@ -65,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         ImageButton cross = (ImageButton) findViewById(R.id.cross);
 
         streamView = (VideoView)findViewById(R.id.streamview);
+        downloadedImage = (ImageView)findViewById(R.id.downloadedImage);
 
         left.setOnClickListener(this);
         right.setOnClickListener(this);
@@ -106,9 +112,25 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 break;
 		    case R.id.start:
 				//StartVideo("http://10.4.95.101/cgi-bin/streamer.cgi");
-                StartVideo("http://www.androidbegin.com/tutorial/AndroidCommercial.3gp");
-				//StartVideo("http://vevoplaylist-live.hls.adaptive.level3.net/vevo/ch1/appleman.m3u8");
-				break;
+                 StartVideo("http://10.4.95.101:8090");
+                //new UploadMyCommand("streaming","http://10.4.95.101/cgi-bin/streamer.cgi").execute();
+                //StartVideo("http://www.androidbegin.com/tutorial/AndroidCommercial.3gp");
+                //StartVideo("http://vevoplaylist-live.hls.adaptive.level3.net/vevo/ch1/appleman.m3u8");
+                break;
+            case R.id.my_right:
+                new UploadMyCommand("open_streamer","http://10.4.95.101/cgi-bin/player.cgi").execute();
+                break;
+            case R.id.back:
+                new DownloadImage("http://10.4.95.101/test.jpg").execute();
+                break;
+            case R.id.my_left:
+                new UploadMyCommand("close_streamer","http://10.4.95.101/cgi-bin/cam.cgi").execute();
+                //new DownloadImage("http://10.4.95.101/cam.jpg").execute();
+                //new DownloadImage("https://java.sogeti.nl/JavaBlog/wp-content/uploads/2009/04/android_icon_256.png").execute();
+                break;
+            case R.id.cross:
+                new UploadMyCommand("close_streamer","http://10.4.95.101/cgi-bin/close_streamer.cgi").execute();
+                break;
 		/*
 			case R.id.cross:
 				new UploadMyCommand("cross").execute();
@@ -221,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 // post.setEntity(new UrlEncodedFormEntity(dataToSend));
                 //httpclient.execute(post);
 
-                post.setEntity(new UrlEncodedFormEntity(dataToSend, HTTP.UTF_8));
+                //post.setEntity(new UrlEncodedFormEntity(dataToSend, HTTP.UTF_8));
                 HttpResponse response = httpclient.execute(post);
                 //finish();
 
@@ -231,11 +253,57 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             return null;
         }
 
-
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             Toast.makeText(getApplicationContext(), "COMMAND UPLOADED ON SERVER", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private class DownloadImage extends AsyncTask<Void, Void, Bitmap> {
+        //String name;
+        String url;
+
+        public DownloadImage (String url) {
+          //  this.name = name;
+            this.url = url;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+
+             try {
+                //URLConnection connection = new URL(url).openConnection();
+                 URL my_url = new URL(url);
+                 HttpURLConnection connection  = (HttpURLConnection) my_url.openConnection();
+                // connection.setConnectTimeout(1000 * 30);
+               //  connection.setReadTimeout(1000 * 30);
+                 InputStream is = connection.getInputStream();
+                 Bitmap img = BitmapFactory.decodeStream(is);
+                 //Bitmap check = BitmapFactory.decodeStream((InputStream) connection.getContent(), null, null);
+                 return img;
+                 //return BitmapFactory.decodeStream(connection.getInputStream());
+             }catch (Exception e) {
+                 e.printStackTrace();
+             }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+
+
+            if(bitmap == null){
+                Toast.makeText(getApplicationContext(), "bitmap is null", Toast.LENGTH_SHORT).show();
+            }
+
+            if(bitmap != null){
+                downloadedImage.setImageBitmap(bitmap);
+                Toast.makeText(getApplicationContext(), "image downloaded", Toast.LENGTH_SHORT).show();
+            }
+
+           // Toast.makeText(getApplicationContext(), "image downloaded", Toast.LENGTH_SHORT).show();
         }
     }
 

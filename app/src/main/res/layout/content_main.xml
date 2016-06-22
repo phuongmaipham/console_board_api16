@@ -115,8 +115,7 @@
         android:id="@+id/back"
         android:background="@drawable/button_back"
         android:layout_alignBottom="@+id/my_right"
-        android:layout_toRightOf="@+id/my_left"
-        android:layout_toEndOf="@+id/my_left" />
+        android:layout_toRightOf="@+id/my_left" />
 
     <ImageButton
         android:layout_width="@android:dimen/notification_large_icon_height"
@@ -124,7 +123,16 @@
         android:id="@+id/start"
         android:background="@drawable/button_start"
         android:layout_alignBottom="@+id/my_right"
-        android:layout_toLeftOf="@+id/my_right"
-        android:layout_toStartOf="@+id/my_right" />
+        android:layout_toLeftOf="@+id/my_right" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/my_left"
+        android:layout_alignTop="@+id/back"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignBottom="@+id/my_left"
+        android:id="@+id/downloadedImage" />
 
 </RelativeLayout>
