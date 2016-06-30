@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -37,7 +39,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-
 public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     /**
@@ -47,12 +48,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     private GoogleApiClient client;
     private ProgressDialog pDialog;
     VideoView streamView;
+    //WebView streamView;
+    //WebView webView;
+    WebView play;
     MediaController mediaController;
     ImageView downloadedImage;
     ImageView zoomImage;
     Bitmap download_img;
     private static final String SEVRER_ADDRESS = "http://localhost/db_upload.php";
-
 
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -87,9 +90,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         ImageButton square = (ImageButton) findViewById(R.id.square);
         ImageButton cross = (ImageButton) findViewById(R.id.cross);
 
+
         streamView = (VideoView)findViewById(R.id.streamview);
-        downloadedImage = (ImageView)findViewById(R.id.downloadedImage);
-        zoomImage = (ImageView)findViewById(R.id.zoomImage);
+        //streamView = (WebView) findViewById(R.id.streamview);
+        downloadedImage = (ImageView) findViewById(R.id.downloadedImage);
+        zoomImage = (ImageView) findViewById(R.id.zoomImage);
 
         left.setOnClickListener(this);
         right.setOnClickListener(this);
@@ -106,9 +111,16 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         start.setOnClickListener(this);
         back.setOnClickListener(this);
 
+        //webView = (WebView) findViewById(R.id.streamview);
+        //webView.setWebViewClient(new WebViewClient());
+
+        play = (WebView) findViewById(R.id.play);
+        play.setWebViewClient(new WebViewClient());
+        play.setVisibility(View.INVISIBLE);
+
         downloadedImage.setOnClickListener(this);
         zoomImage.setOnClickListener(this);
-
+        //streamView.setOnClickListener(this);
         streamView.setMediaController(new MediaController(this));
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -121,37 +133,41 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.left:
-                new UploadMyCommand("left","http://10.4.95.101/cgi-bin/motors_mini.cgi?s=turnleft").execute();
+                new UploadMyCommand("left", "http://10.4.95.101/cgi-bin/motors_mini.cgi?s=turnleft").execute();
                 break;
             case R.id.right:
-                new UploadMyCommand("right","http://10.4.95.101/cgi-bin/motors_mini.cgi?s=turnright").execute();
+                new UploadMyCommand("right", "http://10.4.95.101/cgi-bin/motors_mini.cgi?s=turnright").execute();
                 break;
             case R.id.up:
-                new UploadMyCommand("up","http://10.4.95.101/cgi-bin/motors_mini.cgi?s=forward").execute();
+                new UploadMyCommand("up", "http://10.4.95.101/cgi-bin/motors_mini.cgi?s=forward").execute();
                 break;
             case R.id.down:
-                new UploadMyCommand("down","http://10.4.95.101/cgi-bin/motors_mini.cgi?s=backward").execute();
+                new UploadMyCommand("down", "http://10.4.95.101/cgi-bin/motors_mini.cgi?s=backward").execute();
                 break;
-		    case R.id.start:
-				//StartVideo("http://10.4.95.101/cgi-bin/streamer.cgi");
+            case R.id.start:
+                //StartVideo("http://10.4.95.101/cgi-bin/streamer.cgi");
                  StartVideo("http://10.4.95.101:8090");
+                //webView.loadUrl("http://10.4.95.99/pi/stream.html");
+                //new UploadMyCommand("stream","http://192.168.1.93/stream.html").execute();
+                ///streamView.loadUrl("http://192.168.1.93/stream.html");
                 //new UploadMyCommand("streaming","http://10.4.95.101/cgi-bin/streamer.cgi").execute();
                 //StartVideo("http://www.androidbegin.com/tutorial/AndroidCommercial.3gp");
                 //StartVideo("http://vevoplaylist-live.hls.adaptive.level3.net/vevo/ch1/appleman.m3u8");
                 break;
             case R.id.my_right:
-                new UploadMyCommand("open_streamer","http://10.4.95.101/cgi-bin/player.cgi").execute();
+                //new UploadMyCommand("open_streamer", "http://10.4.95.101/cgi-bin/player.cgi").execute();
+                play.loadUrl("http://10.4.95.101/cgi-bin/http_player.cgi");
                 break;
             case R.id.back:
                 new DownloadImage("http://10.4.95.101/test.jpg").execute();
                 break;
             case R.id.my_left:
-                new UploadMyCommand("close_streamer","http://10.4.95.101/cgi-bin/cam.cgi").execute();
+                new UploadMyCommand("close_streamer", "http://10.4.95.101/cgi-bin/cam.cgi").execute();
                 //new DownloadImage("http://10.4.95.101/cam.jpg").execute();
                 //new DownloadImage("https://java.sogeti.nl/JavaBlog/wp-content/uploads/2009/04/android_icon_256.png").execute();
                 break;
             case R.id.cross:
-                new UploadMyCommand("close_streamer","http://10.4.95.101/cgi-bin/close_streamer.cgi").execute();
+                new UploadMyCommand("close_streamer", "http://10.4.95.101/cgi-bin/close_streamer.cgi").execute();
                 break;
             case R.id.downloadedImage:
                 zoomImage.setVisibility(View.VISIBLE);
@@ -160,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 break;
             case R.id.zoomImage:
                 zoomImage.setVisibility(View.INVISIBLE);
-                if(download_img == null)
+                if (download_img == null)
                     Toast.makeText(getApplicationContext(), "image downloaded is null", Toast.LENGTH_SHORT).show();
                 else if (download_img != null)
                     Toast.makeText(getApplicationContext(), "image downloaded is not null", Toast.LENGTH_SHORT).show();
@@ -209,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         }
 
 
-	/*
+    /*
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -258,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         //String url ="http://10.4.95.99/db_upload.php";
         //String url ="http://10.4.95.101/cgi-bin/motors_mini?s=forward";
 
-        public UploadMyCommand (String move, String url){
+        public UploadMyCommand(String move, String url) {
             this.move = move;
             this.url = url;
         }
@@ -267,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         protected Void doInBackground(Void... params) {
 
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
-            dataToSend.add(new BasicNameValuePair("Description",move));
+            dataToSend.add(new BasicNameValuePair("Description", move));
 
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost post = new HttpPost(url);
@@ -297,58 +313,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     // DOWNLOAD IMAGE
     private class DownloadImage extends AsyncTask<Void, Void, Bitmap> {
-    //String name;
-    String url;
-
-    public DownloadImage (String url) {
-        //  this.name = name;
-        this.url = url;
-    }
-
-    @Override
-    protected Bitmap doInBackground(Void... params) {
-
-        try {
-            //URLConnection connection = new URL(url).openConnection();
-            URL my_url = new URL(url);
-            HttpURLConnection connection  = (HttpURLConnection) my_url.openConnection();
-            // connection.setConnectTimeout(1000 * 30);
-            //  connection.setReadTimeout(1000 * 30);
-            InputStream is = connection.getInputStream();
-            download_img = BitmapFactory.decodeStream(is);
-            //Bitmap check = BitmapFactory.decodeStream((InputStream) connection.getContent(), null, null);
-            return download_img;
-            //return BitmapFactory.decodeStream(connection.getInputStream());
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    protected void onPostExecute(Bitmap bitmap) {
-        super.onPostExecute(bitmap);
-
-
-        if(bitmap == null){
-            Toast.makeText(getApplicationContext(), "bitmap is null", Toast.LENGTH_SHORT).show();
-        }
-
-        if(bitmap != null){
-            downloadedImage.setImageBitmap(bitmap);
-            Toast.makeText(getApplicationContext(), "image downloaded", Toast.LENGTH_SHORT).show();
-        }
-
-        // Toast.makeText(getApplicationContext(), "image downloaded", Toast.LENGTH_SHORT).show();
-    }
-}
-
-
-    private class DownloadZoominImage extends AsyncTask<Void, Void, Bitmap> {
         //String name;
         String url;
 
-        public DownloadZoominImage (String url) {
+        public DownloadImage(String url) {
             //  this.name = name;
             this.url = url;
         }
@@ -359,15 +327,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             try {
                 //URLConnection connection = new URL(url).openConnection();
                 URL my_url = new URL(url);
-                HttpURLConnection connection  = (HttpURLConnection) my_url.openConnection();
+                HttpURLConnection connection = (HttpURLConnection) my_url.openConnection();
                 // connection.setConnectTimeout(1000 * 30);
                 //  connection.setReadTimeout(1000 * 30);
                 InputStream is = connection.getInputStream();
-                Bitmap img = BitmapFactory.decodeStream(is);
+                download_img = BitmapFactory.decodeStream(is);
                 //Bitmap check = BitmapFactory.decodeStream((InputStream) connection.getContent(), null, null);
-                return img;
+                return download_img;
                 //return BitmapFactory.decodeStream(connection.getInputStream());
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -378,11 +346,59 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             super.onPostExecute(bitmap);
 
 
-            if(bitmap == null){
+            if (bitmap == null) {
                 Toast.makeText(getApplicationContext(), "bitmap is null", Toast.LENGTH_SHORT).show();
             }
 
-            if(bitmap != null){
+            if (bitmap != null) {
+                downloadedImage.setImageBitmap(bitmap);
+                Toast.makeText(getApplicationContext(), "image downloaded", Toast.LENGTH_SHORT).show();
+            }
+
+            // Toast.makeText(getApplicationContext(), "image downloaded", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private class DownloadZoominImage extends AsyncTask<Void, Void, Bitmap> {
+        //String name;
+        String url;
+
+        public DownloadZoominImage(String url) {
+            //  this.name = name;
+            this.url = url;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+
+            try {
+                //URLConnection connection = new URL(url).openConnection();
+                URL my_url = new URL(url);
+                HttpURLConnection connection = (HttpURLConnection) my_url.openConnection();
+                // connection.setConnectTimeout(1000 * 30);
+                //  connection.setReadTimeout(1000 * 30);
+                InputStream is = connection.getInputStream();
+                Bitmap img = BitmapFactory.decodeStream(is);
+                //Bitmap check = BitmapFactory.decodeStream((InputStream) connection.getContent(), null, null);
+                return img;
+                //return BitmapFactory.decodeStream(connection.getInputStream());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+
+
+            if (bitmap == null) {
+                Toast.makeText(getApplicationContext(), "bitmap is null", Toast.LENGTH_SHORT).show();
+            }
+
+            if (bitmap != null) {
                 zoomImage.setImageBitmap(bitmap);
                 Toast.makeText(getApplicationContext(), "image downloaded", Toast.LENGTH_SHORT).show();
             }
@@ -390,9 +406,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             // Toast.makeText(getApplicationContext(), "image downloaded", Toast.LENGTH_SHORT).show();
         }
     }
+
     // save photo
-    private void savePhoto(Bitmap bmp)
-    {
+    private void savePhoto(Bitmap bmp) {
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         FileOutputStream out = null;
         Calendar c = Calendar.getInstance();
@@ -403,28 +419,24 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 + fromInt(c.get(Calendar.MINUTE))
                 + fromInt(c.get(Calendar.SECOND));
         File imageFileName = new File(path, date.toString() + ".jpg");
-        try
-        {
+        try {
             out = new FileOutputStream(imageFileName);
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
             out.close();
             scanPhoto(imageFileName.toString());
             out = null;
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         Toast.makeText(MainActivity.this, "Saved to gallery", Toast.LENGTH_SHORT).show();
     }
 
-    private String fromInt(int val)
-    {
+    private String fromInt(int val) {
         return String.valueOf(val);
     }
 
-    private void scanPhoto(String imageFileName)
-    {
+    private void scanPhoto(String imageFileName) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(imageFileName);
         Uri contentUri = Uri.fromFile(f);
@@ -448,4 +460,5 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         }
     }
 */
+
 }
