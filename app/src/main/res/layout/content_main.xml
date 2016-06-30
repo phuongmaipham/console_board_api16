@@ -152,8 +152,12 @@
         android:layout_width="@android:dimen/thumbnail_width"
         android:layout_height="@android:dimen/notification_large_icon_height"
         android:id="@+id/zoomImage"
+        android:layout_alignParentTop="true"
         android:layout_above="@+id/back"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignRight="@+id/my_right"
+        android:layout_alignEnd="@+id/my_right"
+        android:layout_toRightOf="@+id/down"
+        android:layout_toEndOf="@+id/down" />
 
     <WebView
         android:layout_width="wrap_content"

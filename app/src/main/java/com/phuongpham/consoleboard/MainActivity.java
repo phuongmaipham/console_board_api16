@@ -1,14 +1,17 @@
 package com.phuongpham.consoleboard;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -56,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     ImageView zoomImage;
     Bitmap download_img;
     private static final String SEVRER_ADDRESS = "http://localhost/db_upload.php";
-
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -123,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         //streamView.setOnClickListener(this);
         streamView.setMediaController(new MediaController(this));
 
+        verifyStoragePermissions(this);
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -147,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             case R.id.start:
                 //StartVideo("http://10.4.95.101/cgi-bin/streamer.cgi");
                  StartVideo("http://10.4.95.101:8090");
+                //StartVideo("http://192.168.1.93/sample_iPod.m4v");
                 //webView.loadUrl("http://10.4.95.99/pi/stream.html");
                 //new UploadMyCommand("stream","http://192.168.1.93/stream.html").execute();
                 ///streamView.loadUrl("http://192.168.1.93/stream.html");
@@ -159,7 +164,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 play.loadUrl("http://10.4.95.101/cgi-bin/http_player.cgi");
                 break;
             case R.id.back:
-                new DownloadImage("http://10.4.95.101/test.jpg").execute();
+                //new DownloadImage("http://10.4.95.101/test.jpg").execute();
+                new DownloadImage("http://192.168.1.93/pi/test.jpg").execute();
                 break;
             case R.id.my_left:
                 new UploadMyCommand("close_streamer", "http://10.4.95.101/cgi-bin/cam.cgi").execute();
@@ -171,7 +177,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 break;
             case R.id.downloadedImage:
                 zoomImage.setVisibility(View.VISIBLE);
-                new DownloadZoominImage("http://10.4.95.101/test.jpg").execute();
+                //new DownloadZoominImage("http://10.4.95.101/test.jpg").execute();
+                new DownloadZoominImage("http://192.168.1.93/pi/test.jpg").execute();
                 savePhoto(download_img);
                 break;
             case R.id.zoomImage:
@@ -443,7 +450,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
     }
-/*
+
     //permission method.
     public static void verifyStoragePermissions(Activity activity) {
         // Check if we have read or write permission
@@ -459,6 +466,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             );
         }
     }
-*/
+
 
 }
