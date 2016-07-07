@@ -4,35 +4,51 @@
     api-level="23"
     density="xxhdpi"
     format="7"
-    timestamp="42134541969490"
-    token="-377484835550121680" >
+    timestamp="325286956303635"
+    token="-377484835550121680"
+    verifier="COMPATIBLE" >
 
     <task
         name="javac"
-        duration="316" />
+        duration="624" />
     <task
         name="instant-run-dex"
-        duration="0" />
+        duration="1043" />
     <task
         name="instant-run-transform"
-        duration="38" />
+        duration="57" />
     <task
         name="verifier"
-        duration="2" />
+        duration="7" />
 
     <artifact
-        location="/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_8/classes.dex"
-        type="DEX" />
+        location="/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/intermediates/reload-dex/debug/classes.dex"
+        type="RELOAD_DEX" />
 
     <build timestamp="41942325049481" >
         <artifact
             location="/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/outputs/apk/app-debug.apk"
             type="MAIN" />
     </build>
-    <build timestamp="42134541969490" >
+    <build timestamp="300752334487127" >
+        <artifact
+            location="/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_7/classes.dex"
+            type="DEX" />
+        <artifact
+            location="/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_4/classes.dex"
+            type="DEX" />
+    </build>
+    <build timestamp="325209789073974" >
         <artifact
             location="/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_8/classes.dex"
             type="DEX" />
+    </build>
+    <build
+        timestamp="325286956303635"
+        verifier="COMPATIBLE" >
+        <artifact
+            location="/Users/phuongpham/AndroidStudioProjects/ConsoleBoard_API16/app/build/intermediates/reload-dex/debug/classes.dex"
+            type="RELOAD_DEX" />
     </build>
 
 </instant-run>

@@ -21,6 +21,8 @@ import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -58,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     ImageView downloadedImage;
     ImageView zoomImage;
     Bitmap download_img;
+    private SeekBar seekBar;
+    private SeekBar seekBar2;
+    private TextView textView;
     private static final String SEVRER_ADDRESS = "http://localhost/db_upload.php";
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -76,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //textView = (TextView) findViewById(R.id.textView);
 
         ImageButton left = (ImageButton) findViewById(R.id.left);
         ImageButton right = (ImageButton) findViewById(R.id.right);
@@ -97,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         //streamView = (WebView) findViewById(R.id.streamview);
         downloadedImage = (ImageView) findViewById(R.id.downloadedImage);
         zoomImage = (ImageView) findViewById(R.id.zoomImage);
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
+        seekBar2 = (SeekBar) findViewById(R.id.seekBar2);
 
         left.setOnClickListener(this);
         right.setOnClickListener(this);
@@ -130,6 +139,54 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        seekBar.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    int progress = 0;
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar,
+                                                  int progresValue, boolean fromUser) {
+                        progress = progresValue;
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                        // Do something here,
+                        //if you want to do anything at the start of
+                        // touching the seekbar
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        new UploadMyCommand("change", "http://10.4.95.101/cgi-bin/my_servo.cgi?a=2&b="+progress).execute();
+                        // Display the value in textview
+                      //  textView.setText(progress + "/" + seekBar.getMax());
+                    }
+                });
+
+
+        seekBar2.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    int progress = 0;
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar,
+                                                  int progresValue, boolean fromUser) {
+                        progress = progresValue;
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                        // Do something here,
+                        //if you want to do anything at the start of
+                        // touching the seekbar
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        new UploadMyCommand("change", "http://10.4.95.101/cgi-bin/my_servo.cgi?a=3&b="+progress).execute();
+                        // Display the value in textview
+                     //   textView.setText(progress + "/" + seekBar.getMax());
+                    }
+                });
     }
 
 
@@ -164,8 +221,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 play.loadUrl("http://10.4.95.101/cgi-bin/http_player.cgi");
                 break;
             case R.id.back:
-                //new DownloadImage("http://10.4.95.101/test.jpg").execute();
-                new DownloadImage("http://192.168.1.93/pi/test.jpg").execute();
+                new DownloadImage("http://10.4.95.101/test.jpg").execute();
+                //new DownloadImage("http://192.168.1.93/pi/test.jpg").execute();
                 break;
             case R.id.my_left:
                 new UploadMyCommand("close_streamer", "http://10.4.95.101/cgi-bin/cam.cgi").execute();
@@ -177,8 +234,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 break;
             case R.id.downloadedImage:
                 zoomImage.setVisibility(View.VISIBLE);
-                //new DownloadZoominImage("http://10.4.95.101/test.jpg").execute();
-                new DownloadZoominImage("http://192.168.1.93/pi/test.jpg").execute();
+                new DownloadZoominImage("http://10.4.95.101/test.jpg").execute();
+                //new DownloadZoominImage("http://192.168.1.93/pi/test.jpg").execute();
+                //new DownloadZoominImage("http://10.4.95./pi/test.jpg").execute();
                 savePhoto(download_img);
                 break;
             case R.id.zoomImage:
